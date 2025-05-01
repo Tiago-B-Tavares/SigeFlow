@@ -1,0 +1,32 @@
+{
+  "type": "module",
+  "name": "sigeflow",
+  "version": "1.0.0",
+  "description": "Sistema Integrado de Gestão de Estoque de insumos ",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "build": "tsc",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tiago-B-Tavares/SigeFlow.git"
+  },
+  "keywords": [
+    "sistema",
+    "integrado",
+    "controle",
+    "estoque"
+  ],
+  "author": "Tiago Tavares",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tiago-B-Tavares/SigeFlow/issues"
+  },
+  "homepage": "https://github.com/Tiago-B-Tavares/SigeFlow#readme"
+}
