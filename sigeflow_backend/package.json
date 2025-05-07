@@ -1,32 +1,32 @@
 {
-  "type": "module",
   "name": "sigeflow",
   "version": "1.0.0",
-  "description": "Sistema Integrado de Gestão de Estoque de insumos ",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "npm test",
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
+    "start": "node dist/server.js",
+    "dev": "nodemon --exec ts-node src/server.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts,.js",
     "lint:fix": "eslint . --ext .ts,.js --fix",
-    "prepare": "husky install"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Tiago-B-Tavares/SigeFlow.git"
-  },
-  "keywords": [
-    "sistema",
-    "integrado",
-    "controle",
-    "estoque"
-  ],
-  "author": "Tiago Tavares",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Tiago-B-Tavares/SigeFlow/issues"
+  "description": "Sistema Integrado de Gestão de Estoque de insumos",
+  "dependencies": {
+    "@prisma/client": "^6.7.0",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.15.3",
+    "express": "^5.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   },
-  "homepage": "https://github.com/Tiago-B-Tavares/SigeFlow#readme"
+  "devDependencies": {
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-node": "^11.1.0",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.7.0"
+  }
 }
