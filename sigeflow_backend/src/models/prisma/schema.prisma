@@ -7,33 +7,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Supply {
-  id             String   @id @default(uuid())
-  name           String
-  unit           String
-  minStock       Int
-  supplierName   String
-  contractNumber String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  stockMovements StockMovement[]
+model Supplier {
+  id        String     @id @default(uuid())
+  name      String
+  documentNumber String @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  contracts Contract[]
 }
 
+model Contract {
+  id          String     @id @default(uuid())
+  number      String     @unique
+  startDate   DateTime
+  endDate     DateTime?
+  supplier    Supplier   @relation(fields: [supplierId], references: [id])
+  supplierId  String
+  supplies    Supply[]
+}
+
+model Supply {
+  id         String          @id @default(uuid())
+  name       String
+  unit       String
+  minStock   Int
+  contract   Contract        @relation(fields: [contractId], references: [id])
+  contractId String
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  movements  StockMovement[]
+}
 
 model StockMovement {
-  id         String   @id @default(uuid())
-  type       MovementType
-  quantity   Float
-  date       DateTime
-  note       String?
-  createdAt  DateTime @default(now())
-
-  // Relations
-  supply     Supply   @relation(fields: [supplyId], references: [id])
-  supplyId   String
-}
-
-enum MovementType {
-  entry
-  exit
+  id        String   @id @default(uuid())
+  type      String  
+  date      DateTime
+  note      String?
+  createdAt DateTime @default(now())
+  supply    Supply   @relation(fields: [supplyId], references: [id])
+  supplyId  String
 }

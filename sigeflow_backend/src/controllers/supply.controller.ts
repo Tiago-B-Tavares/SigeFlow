@@ -15,9 +15,10 @@ const supplyController = {
   },
 
  async createSupplies(req: Request, res: Response) {
+    // Validação dos dados recebidos
+    
     try {
       const newSupply = await supplyService.createSupply(req.body);
-      
       res.status(201).json(newSupply);
     } catch (error) {
       console.error('Error creating supply:', error);
