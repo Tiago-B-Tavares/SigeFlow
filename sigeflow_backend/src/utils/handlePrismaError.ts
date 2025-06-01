@@ -1,19 +1,20 @@
 import { Prisma } from '@prisma/client';
 import { AppError } from './AppError';
 
-export function handlePrismaError(error: unknown): never {
+export function handlePrismaError(error: Error): never {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     // Unique constraint
     if (error.code === 'P2002') {
-      throw new AppError('Unique constraint failed: duplicate entry', 409);
+      const campo = (error.meta?.target as string[])[0];
+      throw new AppError(`Já existe um registro com o campo '${campo}'`, 409);
     }
 
-    // Foreign key constraint
+
     if (error.code === 'P2003') {
       throw new AppError('Foreign key constraint failed', 400);
     }
 
-    // Add more error codes as needed
+
   }
 
   // Fallback error

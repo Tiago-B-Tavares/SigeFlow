@@ -1,20 +1,25 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import contractService from "../services/contract.service";
-
+import contractSchema from "../schemas/contract.schema";
+import { AppError } from "../utils/AppError";
 const contractController = {
-  async createContract(req: Request, res: Response) {
-    
-    const {supplierId, number, startDate, endDate } = req.body;
 
-    // Validação básica
-    if (!supplierId || !number || !startDate) {
-       res.status(400).json({
-        message: "supplierId, number and startDate are required",
-      });
-      return
+  async createContract(req: Request, res: Response, next: NextFunction) {
+
+    const { supplierId, number, startDate, endDate } = req.body;
+    const validation = contractSchema.safeParse({
+      supplierId,
+      number,
+      startDate,
+      endDate,
+    });
+    if (!validation.success) {
+      res.status(400).json({ errors: validation.error.format() });
     }
 
+
     try {
+      
       const createdContract = await contractService.createContract({
         supplierId,
         number,
@@ -22,11 +27,14 @@ const contractController = {
         endDate: new Date(endDate)
       });
 
-       res.status(201).json(createdContract);
+      res.status(201).json(createdContract);
+
     } catch (error: any) {
-      res.status(500).json({
-        message: error.message,
-      });
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        next(error); 
+      }
     }
   },
 };

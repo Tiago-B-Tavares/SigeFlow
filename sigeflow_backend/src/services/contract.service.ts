@@ -1,10 +1,12 @@
-import prisma from  '../prisma/prismaClient';
+import prisma from '../utils/prismaConfig/prismaClient';
 import { AppError } from '../utils/AppError';
 
 import { Contract } from '@prisma/client';
 import { handlePrismaError } from '../utils/handlePrismaError';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
-// Define the CreateContractInput type
+
+
 type CreateContractInput = {
   number: string;
   startDate: Date;
@@ -13,13 +15,16 @@ type CreateContractInput = {
 };
 
 
+
+
 const contractService = {
-   async createContract({
+
+  async createContract({
     number,
     startDate,
     endDate,
     supplierId,
-  }: CreateContractInput): Promise<Contract>  {
+  }: CreateContractInput): Promise<Contract> {
     try {
       const createdContract = await prisma.contract.create({
         data: { number, startDate, endDate, supplierId },
@@ -27,12 +32,25 @@ const contractService = {
 
       return createdContract;
     } catch (error) {
-      if (error instanceof Error) {
+
+      if (error instanceof PrismaClientKnownRequestError) {
         handlePrismaError(error);
       }
       throw new AppError('Failed to create contract', 500);
     }
   },
+  async getContracts(){
+
+  },
+  async getContract(){
+
+  },
+  async updateContract(){
+
+  },
+   async updateContractPartial(){
+    
+   }
 };
 
 export default contractService;

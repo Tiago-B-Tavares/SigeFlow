@@ -1,7 +1,8 @@
-import { Router } from 'express';
+import { request, Router } from 'express';
 
-import { logger } from '../middlewares/logger';
+
 import contractController from '../controllers/contract.controller';
+
 
 const router = Router();
 
