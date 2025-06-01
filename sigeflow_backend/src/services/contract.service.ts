@@ -15,8 +15,6 @@ type CreateContractInput = {
 };
 
 
-
-
 const contractService = {
 
   async createContract({
@@ -39,18 +37,31 @@ const contractService = {
       throw new AppError('Failed to create contract', 500);
     }
   },
-  async getContracts(){
+  async getContracts() {
+    try {
+      const contractsList = await prisma.contract.findMany();
+      return contractsList;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        handlePrismaError(error);
+      }
+      throw new AppError('Failed to fetch contracts', 500);
+    }
+  },
+
+  async getContract() {
 
   },
-  async getContract(){
+  async updateContract() {
 
   },
-  async updateContract(){
+  async updateContractPartial() {
 
   },
-   async updateContractPartial(){
-    
-   }
+  async deleteContract() {
+
+  }
+
 };
 
 export default contractService;

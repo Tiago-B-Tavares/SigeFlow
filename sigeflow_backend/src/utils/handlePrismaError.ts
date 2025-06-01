@@ -17,6 +17,5 @@ export function handlePrismaError(error: Error): never {
 
   }
 
-  // Fallback error
   throw new AppError('Unexpected database error', 500);
 }
