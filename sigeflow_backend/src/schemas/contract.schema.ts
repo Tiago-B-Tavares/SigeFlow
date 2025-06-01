@@ -1,7 +1,8 @@
 import z from 'zod';
 
 const contractSchema = z.object({
-  supplierId: z.string().uuid(), // já valida formato e não vazio
+  
+  supplierId: z.string().uuid(),
   number: z.string().nonempty("Número do contrato é obrigatório"),
   startDate: z.string().refine(date => !isNaN(Date.parse(date)), {
     message: "Formato da data de início inválido",
@@ -16,7 +17,10 @@ const contractSchema = z.object({
   return true;
 }, {
   message: "Data de término deve ser maior ou igual à data de início",
-  path: ["endDate"], // marca o erro no campo endDate
+  path: ["endDate"], 
 });
+
+
+
 
 export default contractSchema;

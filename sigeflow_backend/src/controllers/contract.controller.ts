@@ -3,6 +3,7 @@ import contractService from "../services/contract.service";
 import contractSchema from "../schemas/contract.schema";
 import { AppError } from "../utils/AppError";
 
+
 const contractController = {
 
   async createContract(req: Request, res: Response, next: NextFunction) {
@@ -41,15 +42,41 @@ const contractController = {
   async getContracts(req: Request, res: Response, next: NextFunction) {
     try {
       const contractsList = await contractService.getContracts()
-       res.status(200).json(contractsList);
+      res.status(200).json(contractsList);
     } catch (error) {
       if (error instanceof AppError) {
-         res.status(error.statusCode).json({ message: error.message });
+        res.status(error.statusCode).json({ message: error.message });
       } else {
         next(error);
       }
     }
+  },
+
+  async getContractById(req: Request, res: Response, next: NextFunction) {
+    const id = req.query.id as string
+
+    if (!id) {
+      res.status(400).json({ message: "id não recebido!" })
+    }
+
+    try {
+
+      const contract = await contractService.getContractById(id);
+
+      res.status(200).json(contract);
+
+    } catch (error) {
+
+      if (error instanceof AppError) {
+
+        res.status(error.statusCode).json({ message: error.message });
+        
+      }
+      next(error);
+    }
   }
+
+
 };
 
 export default contractController;

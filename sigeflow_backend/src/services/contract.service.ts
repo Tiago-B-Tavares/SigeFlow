@@ -49,9 +49,20 @@ const contractService = {
     }
   },
 
-  async getContract() {
-
-  },
+  async getContractById(id: string): Promise<Contract> {
+  try {
+    const contract = await prisma.contract.findUniqueOrThrow({
+      where: { id },
+    });
+    return contract;
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      handlePrismaError(error);
+    }
+    throw new AppError('Contrato não encontrado', 404);
+  }
+}
+,
   async updateContract() {
 
   },
