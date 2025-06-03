@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import contractService from "../services/contract.service";
-import contractSchema from "../schemas/contract.schema";
 import { AppError } from "../utils/AppError";
+import { createContractSchema, updateContractSchema } from "../schemas/contract.schema";
 
 
 const contractController = {
@@ -9,14 +9,14 @@ const contractController = {
   async createContract(req: Request, res: Response, next: NextFunction) {
 
     const { supplierId, number, startDate, endDate } = req.body;
-    const validation = contractSchema.safeParse({
+    const validation = createContractSchema.safeParseAsync({
       supplierId,
       number,
       startDate,
       endDate,
     });
-    if (!validation.success) {
-      res.status(400).json({ errors: validation.error.format() });
+    if (!(await validation).success) {
+      res.status(400).json({ errors: (await validation).error });
     }
 
     try {
@@ -70,11 +70,57 @@ const contractController = {
       if (error instanceof AppError) {
 
         res.status(error.statusCode).json({ message: error.message });
-        
+
       }
       next(error);
     }
+  },
+  
+  async updateContract(req: Request, res: Response, next: NextFunction) {
+  const id = req.query.id as string;
+
+  if (!id) {
+     res.status(400).json({ message: "ID não recebido!" }); // Adicionado return
+     return
   }
+
+  const { supplierId, number, startDate, endDate } = req.body;
+  
+  try {
+    
+    const validation = await updateContractSchema.safeParseAsync({
+      id, 
+      number,
+      startDate,
+      endDate,
+    });
+
+    if (!validation.success) { 
+       res.status(400).json({ 
+        message: "Dados inválidos",
+        errors: validation.error.flatten() 
+      });
+      return
+    }
+
+    const updatedContract = await contractService.updateContract({ 
+      id, 
+      supplierId, 
+      number, 
+      startDate, 
+      endDate 
+    });
+
+     res.status(200).json(updatedContract);
+     return
+
+  } catch (error: any) {
+    if (error instanceof AppError) {
+       res.status(error.statusCode).json({ message: error.message });
+    }
+     next(error);
+  }
+}
 
 
 };

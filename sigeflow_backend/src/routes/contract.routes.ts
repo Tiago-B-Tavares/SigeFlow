@@ -69,4 +69,26 @@ router.post('/', contractController.createContract);
  */
 router.get('/', contractController.getContractById);
 
+/**
+ * @swagger
+ * /contracts:
+ *   get:
+ *     summary: Atualiza todos os dados do contrato por completo
+ *     tags: [Contracts]
+ *     parameters:
+ *       - in: query
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: UUID do contrato
+ *     responses:
+ *       200:
+ *         description: Contrato atualizado com sucesso
+ *       400:
+ *         description: Dados da requisição invalidos
+ *      
+ */
+router.put('/', contractController.updateContract);
+
 export default router;

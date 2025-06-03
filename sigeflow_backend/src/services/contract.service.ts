@@ -13,6 +13,13 @@ type CreateContractInput = {
   endDate: Date;
   supplierId: string;
 };
+type UpdateContractInput = {
+  id: string;
+  number: string;
+  startDate: Date;
+  endDate: Date;
+  supplierId: string;
+};
 
 
 const contractService = {
@@ -48,22 +55,49 @@ const contractService = {
       throw new AppError('Failed to fetch contracts', 500);
     }
   },
-
   async getContractById(id: string): Promise<Contract> {
-  try {
-    const contract = await prisma.contract.findUniqueOrThrow({
-      where: { id },
-    });
-    return contract;
-  } catch (error) {
-    if (error instanceof PrismaClientKnownRequestError) {
-      handlePrismaError(error);
+    try {
+      const contract = await prisma.contract.findUniqueOrThrow({
+        where: { id },
+      });
+      return contract;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        handlePrismaError(error);
+      }
+      throw new AppError('Contrato não encontrado', 404);
     }
-    throw new AppError('Contrato não encontrado', 404);
   }
-}
-,
-  async updateContract() {
+  ,
+  async updateContract({
+    id,
+    number,
+    startDate,
+    endDate,
+    supplierId,
+  }: UpdateContractInput): Promise<Contract> {
+    try {
+     
+      
+      const updatedContract = await prisma.contract.update({
+        where: {
+          id: id
+        },
+        data: {
+          number: number,
+          startDate: new Date(startDate),
+          endDate: new Date(endDate),
+          supplierId: supplierId
+        }
+      })
+      return updatedContract
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        handlePrismaError(error);
+      }
+      throw new AppError('Contrato não encontrado', 404);
+    }
+
 
   },
   async updateContractPartial() {
