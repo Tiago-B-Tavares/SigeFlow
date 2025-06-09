@@ -54,6 +54,9 @@ export const createContractSchema = contractBaseSchema.extend({
   path: ["number"]
 });
 
+
+
+
 // Schema para atualização
 export const updateContractSchema = contractBaseSchema.partial().extend({
   id: z.string().uuid("ID do contrato inválido"),
@@ -67,15 +70,24 @@ export const updateContractSchema = contractBaseSchema.partial().extend({
 }, {
   message: "Data de término deve ser posterior ou igual à data de início",
   path: ["endDate"]
-}).refine(async (data) => {
-  if (data.number) {
-    return await checkUniqueNumber(data.number, data.id);
+})
+
+
+
+// Schema para atualização parcial
+export const updateContractPartialSchema = contractBaseSchema.partial().extend({
+  id: z.string().uuid("ID do contrato inválido").nonempty(),
+  startDate: dateSchema.optional(),
+  endDate: dateSchema.optional()
+}).refine(data => {
+  if (data.startDate && data.endDate) {
+    return data.startDate <= data.endDate;
   }
   return true;
 }, {
-  message: "Número de contrato já está em uso",
-  path: ["number"]
-});
+  message: "Data de término deve ser posterior ou igual à data de início",
+  path: ["endDate"]
+})
 
 // Schema para resposta (opcional)
 export const contractResponseSchema = contractBaseSchema.extend({

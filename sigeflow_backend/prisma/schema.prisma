@@ -17,8 +17,8 @@ model Supplier {
 }
 
 model Contract {
-  id          String     @id @default(uuid())
-  number      String     @unique
+  id          String     @id @default(uuid()) @unique
+  number      String    @unique 
   startDate   DateTime
   endDate     DateTime?
   supplier    Supplier   @relation(fields: [supplierId], references: [id])

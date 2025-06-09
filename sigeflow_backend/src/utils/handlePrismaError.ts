@@ -5,7 +5,10 @@ export function handlePrismaError(error: Error): never {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     // Unique constraint
     if (error.code === 'P2002') {
-      const campo = (error.meta?.target as string[])[0];
+      
+       const campo = Array.isArray(error.meta?.target) && error.meta.target.length > 0
+        ? error.meta.target[0]
+        : 'campo desconhecido';
       throw new AppError(`Já existe um registro com o campo '${campo}'`, 409);
     }
 
@@ -16,7 +19,10 @@ export function handlePrismaError(error: Error): never {
 
     // Record not found
     if (error.code === 'P2025') {
-      const campo = (error.meta?.target as string[])[0] ?? 'identificador';
+      //nessa validação eu vejo se nao retornou undefined  antes de retornar a mensagem de erro para que nao caia no middleware de erro global
+      const campo = Array.isArray(error.meta?.target) && error.meta.target.length > 0
+        ? error.meta.target[0]
+        : 'identificador';
       throw new AppError(`Nenhum valor encontrado para o campo '${campo}'`, 404);
     }
   }

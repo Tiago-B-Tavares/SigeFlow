@@ -2,11 +2,13 @@ import { ErrorRequestHandler } from "express";
 import { AppError } from "../utils/AppError";
 
 export const globalErrorHandler: ErrorRequestHandler = (
-    error,  // tipo inferido pelo ErrorRequestHandler como Error
+    error,  
     req,
     res,
     next
 ) => {
+   
+    
     if (error instanceof AppError) {
         res.status(error.statusCode).json({ message: error.message });
     }

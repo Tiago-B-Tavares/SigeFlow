@@ -2,8 +2,9 @@ import prisma from '../utils/prismaConfig/prismaClient';
 import { AppError } from '../utils/AppError';
 
 import { Contract } from '@prisma/client';
-import { handlePrismaError } from '../utils/handlePrismaError';
+
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { handlePrismaError } from '../utils/handlePrismaError';
 
 
 
@@ -19,6 +20,15 @@ type UpdateContractInput = {
   startDate: Date;
   endDate: Date;
   supplierId: string;
+};
+
+
+type UpdateContractPartialInput = {
+  id: string;
+  number?: string;
+  startDate?: Date;
+  endDate?: Date;
+  supplierId?: string;
 };
 
 
@@ -77,8 +87,8 @@ const contractService = {
     supplierId,
   }: UpdateContractInput): Promise<Contract> {
     try {
-     
-      
+
+
       const updatedContract = await prisma.contract.update({
         where: {
           id: id
@@ -92,6 +102,42 @@ const contractService = {
       })
       return updatedContract
     } catch (error) {
+
+      if (error instanceof PrismaClientKnownRequestError) {
+
+
+        handlePrismaError(error);
+      }
+      throw new AppError('Contrato não encontrado', 404);
+    }
+
+
+  },
+  async updateContractPartial({
+    id,
+    number,
+    startDate,
+    endDate,
+    supplierId,
+  }: UpdateContractPartialInput): Promise<Contract> {
+
+    try {
+      const updatedContract = await prisma.contract.update({
+        where: {
+          id: id
+        },
+        data: {
+          number: number,
+          startDate: startDate,
+          endDate: endDate,
+          supplierId: supplierId,
+        }
+      })
+
+
+      return updatedContract;
+
+    } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         handlePrismaError(error);
       }
@@ -100,12 +146,21 @@ const contractService = {
 
 
   },
-  async updateContractPartial() {
-
-  },
-  async deleteContract() {
-
+  async deleteContract(id: string): Promise<Contract> {
+    try {
+      const deleteContract = await prisma.contract.delete({
+        where: {
+          id: id,
+        }
+      })
+      return deleteContract;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        handlePrismaError(error);
+      }
+      throw new AppError('Contrato não encontrado', 404);
   }
+}
 
 };
 
