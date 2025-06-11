@@ -1,4 +1,7 @@
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import prisma from '../utils/prismaConfig/prismaClient';
+import { handlePrismaError } from '../utils/handlePrismaError';
+import { AppError } from '../utils/AppError';
 
 interface Supplier {
   name: string;
@@ -26,7 +29,10 @@ const Supplier = {
       const supplies = await prisma.supply.findMany();
       return supplies;
     } catch (error: any) {
-      throw new Error('Error fetching supplies: ' + error.message);
+      if (error instanceof PrismaClientKnownRequestError) {
+             handlePrismaError(error);
+           }
+           throw new AppError('Erro ao buscar lista de insumos', 400);
     }
   },
 };

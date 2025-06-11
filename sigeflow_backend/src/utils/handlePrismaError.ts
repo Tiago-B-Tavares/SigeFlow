@@ -14,7 +14,12 @@ export function handlePrismaError(error: Error): never {
 
     // Foreign key constraint
     if (error.code === 'P2003') {
-      throw new AppError('Violação de integridade referencial (foreign key)', 400);
+      const campo = Array.isArray(error.meta?.target) && error.meta.target.length > 0
+        ? error.meta.target[0]
+        : 'id';
+        
+        
+      throw new AppError(`Nenhum valor encontrado para o este '${campo}'`, 404);
     }
 
     // Record not found

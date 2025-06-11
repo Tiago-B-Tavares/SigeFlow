@@ -1,3 +1,6 @@
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { AppError } from '../utils/AppError';
+import { handlePrismaError } from '../utils/handlePrismaError';
 import prisma from '../utils/prismaConfig/prismaClient';
 interface Supply {
   name: string;
@@ -14,17 +17,21 @@ const supplyModel = {
     try {
       console.log(name, unit, minStock, contractId);
       
-      // const createdSupply = await prisma.supply.create({
-      //   data: {
-      //     name,
-      //     unit,
-      //     minStock,
-      //     contractId,
-      //   },
-      // });
-      // return createdSupply;
+      const createdSupply = await prisma.supply.create({
+        data: {
+          name,
+          unit,
+          minStock,
+          contractId,
+        },
+      });
+      return createdSupply;
     } catch (error: any) {
-      throw new Error('Error creating supply: ' + error.message);
+       console.log(error);
+        if (error instanceof PrismaClientKnownRequestError) {
+             handlePrismaError(error);
+           }
+           throw new AppError('Contrato não encontrado', 404);
     }
 
   },
