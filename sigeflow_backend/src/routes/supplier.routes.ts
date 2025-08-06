@@ -4,7 +4,7 @@ import supplierController from '../controllers/supplier.controller';
 
 const router = Router();
 
-router.get('/', supplierController.getSuppliers);
+router.get('/:id', supplierController.getSupplier);
 router.post('/',logger, supplierController.createSupplier);
 
 

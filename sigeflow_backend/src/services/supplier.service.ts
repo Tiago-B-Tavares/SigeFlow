@@ -30,11 +30,28 @@ const Supplier = {
       return supplies;
     } catch (error: any) {
       if (error instanceof PrismaClientKnownRequestError) {
-             handlePrismaError(error);
-           }
-           throw new AppError('Erro ao buscar lista de insumos', 400);
+        handlePrismaError(error);
+      }
+      throw new AppError('Erro ao buscar lista de insumos', 400);
     }
   },
+
+  async getSupplier(id: string) {
+    try {
+      const supplier = await prisma.supplier.findUnique({
+        where: {
+          id: id
+        },
+      }
+      );
+      return supplier;
+  } catch(error: any) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      handlePrismaError(error);
+    }
+    throw new AppError('Erro ao buscar lista de fornecedores', 400);
+  }
+}
 };
 
 export default Supplier;

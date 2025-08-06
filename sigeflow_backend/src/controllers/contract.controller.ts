@@ -10,7 +10,7 @@ import { formatResponse } from "../utils/FormatResponse";
 
 
 const contractController = {
-
+  //Criaçã de um novo contrato
   async createContract(req: Request, res: Response, next: NextFunction) {
 
     const { supplierId, number, startDate, endDate } = req.body;
@@ -43,7 +43,7 @@ const contractController = {
       }
     }
   },
-
+//Busca todos os contratos cadastrados
   async getContracts(req: Request, res: Response, next: NextFunction) {
     try {
       const contractsList = await contractService.getContracts()
@@ -56,7 +56,7 @@ const contractController = {
       }
     }
   },
-
+  //Busca por um contrato específico
   async getContractById(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id as string
 
